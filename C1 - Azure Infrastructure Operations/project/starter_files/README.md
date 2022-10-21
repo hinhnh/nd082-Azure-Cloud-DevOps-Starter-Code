@@ -18,6 +18,13 @@ For this project, you will write a Packer template and a Terraform template to d
 
 ### Instructions
 **Your words here**
+Create Tagging Security Policy using template using the command below
+
+az policy definition create --name tagging-policy --mode indexed --rules taggingpolicy.json
+Apply tagging sercurity policy in Azure Portal
+
+[follow guide managing policies](https://learn.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage#assign-a-policy)
+
 
 ### Output
 **Your words here**
