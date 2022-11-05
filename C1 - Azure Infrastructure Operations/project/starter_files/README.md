@@ -30,7 +30,8 @@ For this project, you will write a Packer template and a Terraform template to d
 
 3.Create policy definition with following CLI command:
     az policy definition create --name tagging-policy --display-name "Require a tag on resources" --params "{ "tagName1": { "type": "String", "metadata": { "displayName": "Tag Name", "description": "Name of the tag, such as 'requiretag'" },"defaultValue": "tags01"} }" --subscription "2a65313f-b8d3-4216-a0eb-3a05e912d520" --mode Indexed --rules policyRules.json
-4.Apply policy to resourcea with following CLI command: az policy assignment create --policy tagging-policy --params "{ "tagName1": { "value": "tags01" } }"
+
+4.Apply policy to resources with following CLI command: az policy assignment create --policy tagging-policy --params "{ "tagName1": { "value": "tags01" } }"
 
 5.View list of policies applied with following CLI command: az policy assignment list
 
