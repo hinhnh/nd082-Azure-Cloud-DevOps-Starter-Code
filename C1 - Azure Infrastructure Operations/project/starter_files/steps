@@ -1,0 +1,145 @@
+
+
+1.Create or update the entire set of tags on a subscription.
+az tag create --resource-id /subscriptions/36f2e639-6060-4093-bcff-adb55f8da06a --tags Dept=Finance Status=Normal
+
+2. Delete the entire set of tags on a subscription.
+az tag delete --resource-id /subscriptions/36f2e639-6060-4093-bcff-adb55f8da06a
+
+3.Create or update the entire set of tags on a resource.
+az tag create --resource-id /subscriptions/{sub-id}/resourcegroups/{rg}/providers/Microsoft.Compute/virtualMachines/{vmName} --tags Dept=Finance Status=Normal
+
+FPT Software (FPTSoftware362.onmicrosoft.com
+
+"subscription_id": "2a65313f-b8d3-4216-a0eb-3a05e912d520",
+"client_id": "4f06ee5a-9dd1-4c4f-bfa2-cf6666ee5f9f",        
+"client_secret": "Ec78Q~bJ0j0GAbR2DM0EgBFMxPzrivji9rfLWc8H",
+"tenant_id": "f01e930a-b52e-42b1-b70f-a8882b5d043b"
+
+=================
+{
+    "cloudName": "AzureCloud",
+    "homeTenantId": "f01e930a-b52e-42b1-b70f-a8882b5d043b",
+    "id": "20eaa125-2773-4145-a9b9-677aaccbaf26",
+    "isDefault": false,
+    "managedByTenants": [],
+    "name": "Lab-Udacity",
+    "state": "Enabled",
+    "tenantId": "f01e930a-b52e-42b1-b70f-a8882b5d043b",
+    "user": {
+      "name": "HinhNH@fsoft.com.vn",
+      "type": "user"
+    }
+  }
+Account information
+Subscription ID: 20eaa125-2773-4145-a9b9-677aaccbaf26
+
+Subscription name: Lab-Udacity
+
+Offer Id: MS-AZR-0003P
+
+az group create -n myResourceGroup -l eastus
+
+az ad sp create-for-rbac --role Contributor --name sp-packer-for-sub --scopes /subscriptions/2a65313f-b8d3-4216-a0eb-3a05e912d520 --query "{ client_id: appId, client_secret: password, tenant_id: tenant }"
+
+az ad sp create-for-rbac --role Contributor --name sp-packer --scopes /subscriptions/2a65313f-b8d3-4216-a0eb-3a05e912d520/resourceGroups/hinhnh-project1-devops-rg --query "{ client_id: appId, client_secret: password, tenant_id: tenant }"
+
+Creating 'Contributor' role assignment under scope '/subscriptions/2a65313f-b8d3-4216-a0eb-3a05e912d520'
+The output includes credentials that you must protect. Be sure that you do not include these credentials in your code or check the credentials into your source control. For more information, see https://aka.ms/azadsp-cli
+{
+  "client_id": "07e1f6ba-2666-417f-aa3e-88c473ce3bcb",
+  "client_secret": "yQM8Q~Pl2CV-eTOIWk157IxC45L_9OaL~amFLcRS",
+  "tenant_id": "f01e930a-b52e-42b1-b70f-a8882b5d043b"
+}
+
+
+{
+  "mode": "Indexed",
+  "policyRule": {
+    "if": {
+      "field": "tags",
+      "exists": "false"
+    },
+    "then": {
+      "effect": "deny"
+    }
+  },
+  "parameters": {
+
+
+		
+	}
+}
+
+
+
+az policy definition create --name tagging-policy1 --display-name "Require a tag on resources" --params "{ \"tagName1\": { \"type\": \"String\", \"metadata\": { \"displayName\": \"Tag Name\", \"description\": \"Name of the tag, such as 'requiretag'\" } } }" --subscription "2a65313f-b8d3-4216-a0eb-3a05e912d520" --mode Indexed --rules policyRules.json
+       
+       
+    az policy assignment create --policy tagging-policy --params "{ \"tagName1\": { \"value\": \"requiretag\" } } =>tagsrequiretag
+
+
+
+    -----------------------------
+   resource "azurerm_virtual_network" "main" {
+  name                = "lab-udacity-vnet"
+  address_space       = ["10.7.29.0/29"]
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+}
+============================
+1.Create file policyRules.json to write policy rules
+2.Login Azure command line interface: az login 
+3.Create policy definition with following command CLI:
+    az policy definition create --name tagging-policy --display-name "Require a tag on resources" --params "{ "tagName1": { "type": "String", "metadata": { "displayName": "Tag Name", "description": "Name of the tag, such as 'requiretag'" },"defaultValue": "tags01"} }" --subscription "2a65313f-b8d3-4216-a0eb-3a05e912d520" --mode Indexed --rules policyRules.json
+
+az policy definition create --name tagsPolicy-definition --subscription "Azure for Students" --mode Indexed --rules policyRules.json
+
+az policy definition create --name Hinh-TagsPolicyDefinition1 --subscription "Azure for Students" --mode Indexed --rules policyRules.json
+
+az policy definition create --name tagsPolicy-definition1 --subscription "2a65313f-b8d3-4216-a0eb-3a05e912d520" --mode Indexed --rules policyRules.json
+
+
+4.Run script in CLI to apply policy: az policy assignment create --policy tagging-policy --params "{ "tagName": { "value": "requiretag" } }"
+ az policy assignment create --policy "/subscriptions/36f2e639-6060-4093-bcff-adb55f8da06a/providers/Microsoft.Authorization/policyDefinitions/Hinh-TagsPolicyDefinition"
+
+az policy assignment create --name tagging-plolicy --policy "/subscriptions/36f2e639-6060-4093-bcff-adb55f8da06a/providers/Microsoft.Authorization/policyDefinitions/Hinh-TagsPolicyDefinition"
+
+ az policy assignment create --name Hinh-TagsPolicyDefinition
+
+5.Run script in CLI to view policy applied list: az policy assignment list
+
+az policy definition list --query "[?displayName=='Require VM SKUs not in the G series'].id"
+
+6.Run script in CLI to create a resource group: az group create --name hinhnh-project1-devops-rg --location centralus (You can change "hinhnh-project1-devops" as the resource group name you want. You can change "centralus" as the location you want.)
+7.Open server.json file to write image information
+8.Run "az account show --query "{ subscription_id: id }"" script in CLI to show subscription_id
+9.Run script in CLI to create app registration and show client_id, client_secret, tenant_id: az ad sp create-for-rbac --role Contributor --name sp-packer --scopes /subscriptions/{subscription_id}/resourceGroups/ResourceGroupName --query "{ client_id: appId, client_secret: password, tenant_id: tenant }" (Remember update subscription_id and of this script)
+
+Example: az ad sp create-for-rbac --role Contributor --name sp-packer --scopes /subscriptions/36f2e639-6060-4093-bcff-adb55f8da06a/resourceGroups/hinhnh-project1-devops-rg --query "{ client_id: appId, client_secret: password, tenant_id: tenant }"
+
+
+
+10.Update the subscription_id, client_id, client_secret, tenant_id values in the variables section of the server.json file and save it.
+
+# Using Packer to build image from server.json file:
+ 11.Run script "packer build server.json" in CLI. Image name is value of "managed_image_name" in server.json. Image will be created in the resource group created in step 6.
+
+12.Open main.tf file: This is main configuration file where we are going to define our resource definition. You can add the resources you want to create here. Remember add requiretag tag to resource.
+
+13.Openvariables.tf file: This is the file where we are going to define our variables. You can change the values of the variables if you want by changing the value of default. The values of the two variables prefix and centralus will be used for most resources and should be the same as the resource group information you created in step 6.
+
+# Using Terraform to create resources in the resource group created in step 6.
+14.Run script "terraform init" in CLI to init. This command performs several different initialization steps in order to prepare the current working directory for use with Terraform.
+
+15.Run script "terraform plan" in CLI to init. This command creates an execution plan, which lets you preview the changes that Terraform plans to make to your infrastructure.
+
+16.Run script "terraform apply" in CLI to init. This command executes the actions proposed in a Terraform plan.
+
+17.Run script "terraform destroy" in CLI to delete generated resources.
+
+
+### Output
+policyRules.json file server.json file main.tf file variables.tf solution.plan file Generated resources as project requirement in Azure
+
+"provisioners": [{ "execute_command": "chmod +x {{ .Path }

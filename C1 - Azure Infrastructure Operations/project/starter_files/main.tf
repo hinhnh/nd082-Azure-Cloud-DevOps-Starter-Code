@@ -2,10 +2,19 @@ provider "azurerm" {
   features {}
 }
 
+resource "azurerm_resource_group" "main" {
+  name     = "${var.prefix}-rg"
+  location = var.location
+  tags = {
+    tags01 = "tags01"
+  }
+}
+
+
 resource "azurerm_network_security_group" "main" {
-  name                = "${var.prefix}-nsg"
-  location            = var.location
-  resource_group_name = "${var.prefix}-rg"
+  name                = "${var.prefix}-nsg"  
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
 
   security_rule {
     name                       = "DenyInbound"
@@ -39,8 +48,8 @@ resource "azurerm_network_security_group" "main" {
 resource "azurerm_network_interface" "main" {
   count               = var.NumberOfVM > 1 && var.NumberOfVM < 6 ? var.NumberOfVM : 2
   name                = "${var.prefix}-nic${count.index}"
-  resource_group_name = "${var.prefix}-rg"
-  location            = var.location
+  resource_group_name  = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
 
   ip_configuration {
     name                          = "internal${count.index}"
@@ -55,10 +64,9 @@ resource "azurerm_network_interface" "main" {
 
 resource "azurerm_public_ip" "main" {
   name                = "${var.prefix}-public-ip"
-  resource_group_name = "${var.prefix}-rg"
-  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
   allocation_method   = "Static"
-
   tags = {
     tags01 = "tags01"
   }
@@ -66,8 +74,8 @@ resource "azurerm_public_ip" "main" {
 
 resource "azurerm_lb" "main" {
   name                = "${var.prefix}-lb"
-  resource_group_name = "${var.prefix}-rg"
-  location            = var.location
+  resource_group_name  = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
 
   frontend_ip_configuration {
     name                 = "${var.prefix}-PublicIPAddress"
@@ -87,8 +95,8 @@ resource "azurerm_lb_backend_address_pool" "main" {
 resource "azurerm_virtual_network" "main" {
   name                = "${var.prefix}-network"
   address_space       = ["10.0.0.0/22"]
-  location            = var.location
-  resource_group_name = "${var.prefix}-rg"
+  location            = azurerm_resource_group.main.location
+  resource_group_name  = azurerm_resource_group.main.name
 
   tags = {
      tags01 = "tags01"
@@ -97,7 +105,7 @@ resource "azurerm_virtual_network" "main" {
 
 resource "azurerm_subnet" "internal" {
   name                 = "internal"
-  resource_group_name  = "${var.prefix}-rg"
+  resource_group_name = azurerm_resource_group.main.name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = ["10.0.2.0/24"]
 }
@@ -111,9 +119,8 @@ resource "azurerm_network_interface_backend_address_pool_association" "main" {
 
 resource "azurerm_availability_set" "main" {
   name                = "${var.prefix}-aset"
-  location            = var.location
-  resource_group_name = "${var.prefix}-rg"
-
+  location            = azurerm_resource_group.main.location
+  resource_group_name  = azurerm_resource_group.main.name
   tags = {
      tags01 = "tags01"
   }
@@ -121,18 +128,18 @@ resource "azurerm_availability_set" "main" {
 
 data "azurerm_image" "main" {
   name                = "myPackerImage"
-  resource_group_name = "${var.prefix}-rg"
+  resource_group_name  = "hinhnh-project1-devops-rg-for-image"
 }
 
 output "image_id" {
-  value = "/subscriptions/2a65313f-b8d3-4216-a0eb-3a05e912d520/resourceGroups/hinhnh-project1-devops-rg/providers/Microsoft.Compute/images/myPackerImage"
+  value = "/subscriptions/2a65313f-b8d3-4216-a0eb-3a05e912d520/resourceGroups/hinhnh-project1-devops-rg-for-image/providers/Microsoft.Compute/images/myPackerImage"
 }
 
 resource "azurerm_linux_virtual_machine" "main" {
   count                           = var.NumberOfVM > 1 && var.NumberOfVM < 6 ? var.NumberOfVM : 2
   name                            = "${var.prefix}-vm${count.index}"
-  resource_group_name             = "${var.prefix}-rg"
-  location                        = var.location
+  resource_group_name            = azurerm_resource_group.main.name
+  location                        = azurerm_resource_group.main.location
   size                            = "Standard_B1s"
   admin_username                  = var.username
   admin_password                  = var.password

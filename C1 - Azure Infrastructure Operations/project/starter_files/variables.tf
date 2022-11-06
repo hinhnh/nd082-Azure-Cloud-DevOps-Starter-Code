@@ -21,5 +21,5 @@ variable "password" {
 
 variable "NumberOfVM" {
   description = "Number of virtual machines, number of virtual machines should be at least 2, and no more than 5. If it is outside this range, it will is 2."
-  default = 3
+  default = 2
 }
