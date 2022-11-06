@@ -35,7 +35,7 @@ For this project, you will write a Packer template and a Terraform template to d
 
 5.View list of policies applied with following CLI command: az policy assignment list
 
-6.Create a resource group with following CLI command : az group create --name hinhnh-project1-devops-rg --location centralus 
+6.Create a resource group with following CLI command : az group create --name hinhnh-project1-devops-rg-for-image --location centralus 
 
 7.Create new server.json file to write image information
 

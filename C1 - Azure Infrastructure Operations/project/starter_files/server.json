@@ -16,12 +16,12 @@
 			"image_publisher": "Canonical",
 			"image_offer": "UbuntuServer",
 			"image_sku": "18.04-LTS",
-			"managed_image_resource_group_name": "hinhnh-project1-devops-rg",
+			"managed_image_resource_group_name": "hinhnh-project1-devops-rg-for-image",
 			"managed_image_name": "myPackerImage",
 			"azure_tags": {
 				"tags01": "tags01"
 			},
-			"build_resource_group_name": "hinhnh-project1-devops-rg",
+			"build_resource_group_name": "hinhnh-project1-devops-rg-for-image",
 			"vm_size": "Standard_B1s"
 		}
 	],
